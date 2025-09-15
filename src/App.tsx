@@ -8,7 +8,6 @@ import AuthPage from './components/auth/AuthPage';
 import UserDashboard from './components/dashboard/UserDashboard';
 import AdminDashboard from './components/dashboard/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import DebugInfo from './components/DebugInfo';
 
 const AppRoutes: React.FC = () => {
   const { user, userType, loading } = useAuth();
@@ -69,7 +68,6 @@ const App: React.FC = () => {
         <Router>
           <div className="App">
             <AppRoutes />
-            <DebugInfo />
             <Toaster
               position="top-right"
               toastOptions={{
