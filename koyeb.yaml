@@ -1,0 +1,100 @@
+services:
+  # Backend API Service
+  - name: videomate-shorts-api
+    type: web
+    runtime: docker
+    dockerfile: server/Dockerfile
+    env:
+      - name: NODE_ENV
+        value: production
+      - name: PORT
+        value: 8000
+      - name: MONGODB_URI
+        secret: mongodb-uri
+      - name: JWT_SECRET
+        secret: jwt-secret
+      - name: JWT_EXPIRES_IN
+        value: 24h
+      - name: CLIENT_URL
+        value: https://videomate-shorts-frontend-{region}.koyeb.app
+      - name: GOOGLE_CLIENT_ID
+        secret: google-client-id
+      - name: GOOGLE_CLIENT_SECRET
+        secret: google-client-secret
+      - name: R2_ACCOUNT_ID
+        secret: r2-account-id
+      - name: R2_ACCESS_KEY_ID
+        secret: r2-access-key-id
+      - name: R2_SECRET_ACCESS_KEY
+        secret: r2-secret-access-key
+      - name: R2_BUCKET_NAME
+        secret: r2-bucket-name
+      - name: R2_PUBLIC_URL
+        secret: r2-public-url
+      - name: RAZORPAY_KEY_ID
+        secret: razorpay-key-id
+      - name: RAZORPAY_KEY_SECRET
+        secret: razorpay-key-secret
+    regions:
+      - fra
+      - sin
+    instance_types:
+      - nano
+    scaling:
+      min_instances: 1
+      max_instances: 3
+    healthcheck:
+      path: /api/health
+      port: 8000
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Web Service
+  - name: videomate-shorts-frontend
+    type: web
+    runtime: docker
+    dockerfile: Dockerfile
+    env:
+      - name: VITE_API_URL
+        value: https://videomate-shorts-api-{region}.koyeb.app/api
+      - name: VITE_RAZORPAY_KEY_ID
+        secret: razorpay-key-id
+    regions:
+      - fra
+      - sin
+    instance_types:
+      - nano
+    scaling:
+      min_instances: 1
+      max_instances: 2
+    healthcheck:
+      path: /
+      port: 3000
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+secrets:
+  - name: mongodb-uri
+    description: MongoDB connection string
+  - name: jwt-secret
+    description: JWT secret key for authentication
+  - name: google-client-id
+    description: Google OAuth client ID
+  - name: google-client-secret
+    description: Google OAuth client secret
+  - name: r2-account-id
+    description: Cloudflare R2 account ID
+  - name: r2-access-key-id
+    description: Cloudflare R2 access key ID
+  - name: r2-secret-access-key
+    description: Cloudflare R2 secret access key
+  - name: r2-bucket-name
+    description: Cloudflare R2 bucket name
+  - name: r2-public-url
+    description: Cloudflare R2 public URL
+  - name: razorpay-key-id
+    description: Razorpay key ID
+  - name: razorpay-key-secret
+    description: Razorpay key secret
