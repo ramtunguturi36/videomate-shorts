@@ -48,6 +48,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(response.token);
       setUser(response.user!);
       setUserType('user');
+      
+      // Force a page reload to ensure state is properly updated
+      window.location.href = '/dashboard';
     } catch (error: any) {
       setError(error.response?.data?.message || 'Login failed');
       throw error;
@@ -67,6 +70,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(response.token);
       setUser(response.admin!);
       setUserType('admin');
+      
+      // Force a page reload to ensure state is properly updated
+      window.location.href = '/admin/dashboard';
     } catch (error: any) {
       setError(error.response?.data?.message || 'Admin login failed');
       throw error;
