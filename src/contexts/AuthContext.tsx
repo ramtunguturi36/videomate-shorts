@@ -22,29 +22,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (storedToken) {
         try {
           const response = await authAPI.getCurrentUser();
-          console.log('User data from server:', response); // Debug log
-          
-          // Check if response has user data or if it's the user object directly
-          const userData = response.user || response;
-          
-          if (!userData) {
-            throw new Error('No user data received');
-          }
-          
-          setUser(userData);
-          setUserType(userData.role === 'admin' ? 'admin' : 'user');
+          setUser(response.user);
+          setUserType(response.userType);
           setToken(storedToken);
         } catch (error) {
-          console.error('Auth check error:', error);
           // Token is invalid, remove it
           localStorage.removeItem('token');
           setToken(null);
           setUser(null);
           setUserType(null);
         }
-      } else {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
     checkAuth();
@@ -56,37 +45,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setError(null);
       
       const response: LoginResponse = await authAPI.login(email, password);
-      console.log('Login response:', response); // Debug log
-      
-      if (!response || !response.token) {
-        throw new Error('Invalid response from server');
-      }
       
       localStorage.setItem('token', response.token);
       setToken(response.token);
-      
-      // Ensure we have user data in the response
-      if (!response.user) {
-        throw new Error('No user data received');
-      }
-      
-      // Create a proper User object
-      const userData: User = {
-        id: response.user.id,
-        name: response.user.name,
-        email: response.user.email,
-        role: 'user' // Default role
-      };
-      
-      setUser(userData);
+      setUser(response.user!);
       setUserType('user');
       
-      return userData;
+      // Don't redirect here - let the App component handle routing
+      // The App component will automatically redirect based on user state
     } catch (error: any) {
-      console.error('Login error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
-      setError(errorMessage);
-      throw new Error(errorMessage);
+      setError(error.response?.data?.message || 'Login failed');
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -98,37 +67,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setError(null);
       
       const response: LoginResponse = await authAPI.adminLogin(email, password);
-      console.log('Admin login response:', response); // Debug log
-      
-      if (!response || !response.token) {
-        throw new Error('Invalid response from server');
-      }
       
       localStorage.setItem('token', response.token);
       setToken(response.token);
-      
-      // Ensure we have user data in the response
-      if (!response.user) {
-        throw new Error('No admin data received');
-      }
-      
-      // Create a proper Admin object (assuming Admin has same fields as User for now)
-      const adminData: User = {
-        id: response.user.id,
-        name: response.user.name,
-        email: response.user.email,
-        role: 'admin'
-      };
-      
-      setUser(adminData);
+      setUser(response.admin!);
       setUserType('admin');
       
-      return adminData;
+      // Don't redirect here - let the App component handle routing
+      // The App component will automatically redirect based on user state
     } catch (error: any) {
-      console.error('Admin login error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Admin login failed';
-      setError(errorMessage);
-      throw new Error(errorMessage);
+      setError(error.response?.data?.message || 'Admin login failed');
+      throw error;
     } finally {
       setLoading(false);
     }

@@ -33,19 +33,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, isAdmin = false }) 
 
     try {
       if (isAdmin) {
-        const adminData = await adminLogin(formData.email, formData.password);
-        console.log('Admin login successful:', adminData);
+        await adminLogin(formData.email, formData.password);
         toast.success('Admin login successful!');
-        // The App component will handle the redirection based on the auth state
       } else {
-        const userData = await login(formData.email, formData.password);
-        console.log('User login successful:', userData);
+        await login(formData.email, formData.password);
         toast.success('Login successful!');
-        // The App component will handle the redirection based on the auth state
       }
     } catch (error: any) {
-      console.error('Login error:', error);
-      toast.error(error.message || 'Login failed. Please check your credentials and try again.');
+      toast.error(error.message || 'Login failed');
     }
   };
 
