@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContextType, User, Admin, LoginResponse, RegisterResponse } from '../types/auth';
 import { authAPI } from '../services/api';
 
@@ -9,9 +10,10 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | Admin | null>(null);
   const [userType, setUserType] = useState<'user' | 'admin' | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +31,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Token is invalid, remove it
           localStorage.removeItem('token');
           setToken(null);
+          setUser(null);
+          setUserType(null);
         }
       }
       setLoading(false);
@@ -49,8 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.user!);
       setUserType('user');
       
-      // Force a page reload to ensure state is properly updated
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     } catch (error: any) {
       setError(error.response?.data?.message || 'Login failed');
       throw error;
@@ -71,8 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.admin!);
       setUserType('admin');
       
-      // Force a page reload to ensure state is properly updated
-      window.location.href = '/admin/dashboard';
+      navigate('/admin/dashboard');
     } catch (error: any) {
       setError(error.response?.data?.message || 'Admin login failed');
       throw error;
