@@ -47,7 +47,8 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   process.env.CLIENT_URL || 'http://localhost:3000',
   'https://videomate-shorts-frontend.onrender.com',
-  'https://videomate-shorts.onrender.com'
+  'https://videomate-shorts.onrender.com',
+  // Add any other production domains here
 ];
 
 app.use(cors({
@@ -55,14 +56,22 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
+    // Allow all Render.com subdomains for flexibility
+    if (origin && origin.includes('.onrender.com')) {
+      return callback(null, true);
+    }
+    
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -70,7 +79,11 @@ app.use(session({
   secret: process.env.JWT_SECRET || 'fallback-secret-change-in-production',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // Set to true in production with HTTPS
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    sameSite: 'none', // Allow cross-site cookies for production
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }));
 
 // Passport middleware

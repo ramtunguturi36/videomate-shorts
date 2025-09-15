@@ -51,8 +51,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.user!);
       setUserType('user');
       
-      // Use window.location for navigation since we're outside Router context
-      window.location.href = '/dashboard';
+      // Don't redirect here - let the App component handle routing
+      // The App component will automatically redirect based on user state
     } catch (error: any) {
       setError(error.response?.data?.message || 'Login failed');
       throw error;
@@ -73,8 +73,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.admin!);
       setUserType('admin');
       
-      // Use window.location for navigation since we're outside Router context
-      window.location.href = '/admin/dashboard';
+      // Don't redirect here - let the App component handle routing
+      // The App component will automatically redirect based on user state
     } catch (error: any) {
       setError(error.response?.data?.message || 'Admin login failed');
       throw error;

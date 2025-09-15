@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
@@ -11,6 +11,19 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 const AppRoutes: React.FC = () => {
   const { user, userType, loading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Handle redirect after successful login
+  useEffect(() => {
+    if (!loading && user && userType) {
+      // If user is on login page and successfully logged in, redirect to appropriate dashboard
+      if (location.pathname === '/login') {
+        const targetPath = userType === 'admin' ? '/admin/dashboard' : '/dashboard';
+        navigate(targetPath, { replace: true });
+      }
+    }
+  }, [user, userType, loading, location.pathname, navigate]);
 
   if (loading) {
     return (
@@ -29,7 +42,7 @@ const AppRoutes: React.FC = () => {
       />
       <Route 
         path="/login" 
-        element={!user ? <AuthPage /> : <Navigate to={userType === 'admin' ? '/admin/dashboard' : '/dashboard'} />} 
+        element={!user ? <AuthPage /> : <Navigate to={userType === 'admin' ? '/admin/dashboard' : '/dashboard'} replace />} 
       />
       
       {/* Protected user routes */}
