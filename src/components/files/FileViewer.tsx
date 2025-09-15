@@ -144,7 +144,7 @@ const FileViewer: React.FC<FileViewerProps> = ({ file, onClose, onFileSelect }) 
             </div>
             {file.fileType === 'video' && file.metadata.duration && (
               <div className="text-sm text-gray-600">
-                <span className="font-medium">Duration:</span> {file.formattedDuration}
+                <span className="font-medium">Duration:</span> {(file as any).formattedDuration || 'N/A'}
               </div>
             )}
             {file.metadata.dimensions && (

@@ -44,9 +44,8 @@ services:
         sync: false
 
   # Frontend Static Site
-  - type: web
+  - type: static
     name: videomate-shorts-frontend
-    env: static
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     envVars:

@@ -281,9 +281,9 @@ const VideoCard: React.FC<VideoCardProps> = ({
                   </div>
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4" />
-                    <span>{formatFileSize(video.metadata.fileSize)}</span>
+                    <span>{formatFileSize((video.metadata as any).fileSize || 0)}</span>
                   </div>
-                  <span className="capitalize">{video.metadata.category}</span>
+                  <span className="capitalize">{(video.metadata as any).category || 'General'}</span>
                 </div>
               </div>
             </div>
@@ -454,7 +454,7 @@ const VideoCard: React.FC<VideoCardProps> = ({
                 onUnlockImage={() => {}}
                 onLike={handleLike}
                 onShare={handleShare}
-                onComment={() => toast.info('Comments coming soon!')}
+                onComment={() => toast('Comments coming soon!')}
               />
             </div>
           </div>
@@ -559,9 +559,9 @@ const VideoCard: React.FC<VideoCardProps> = ({
           </div>
           <div className="flex items-center space-x-1">
             <Clock className="w-3 h-3" />
-            <span>{formatFileSize(video.metadata.fileSize)}</span>
+            <span>{formatFileSize((video.metadata as any).fileSize || 0)}</span>
           </div>
-          <span className="capitalize">{video.metadata.category}</span>
+          <span className="capitalize">{(video.metadata as any).category || 'General'}</span>
         </div>
 
         {/* Actions */}
@@ -707,7 +707,7 @@ const VideoCard: React.FC<VideoCardProps> = ({
               onUnlockImage={() => {}}
               onLike={handleLike}
               onShare={handleShare}
-              onComment={() => toast.info('Comments coming soon!')}
+              onComment={() => toast('Comments coming soon!')}
             />
           </div>
         </div>

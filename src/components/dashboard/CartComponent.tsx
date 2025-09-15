@@ -251,7 +251,7 @@ const CartComponent: React.FC = () => {
                 <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
                   <span>Added {item.addedAt.toLocaleDateString()}</span>
                   <span>•</span>
-                  <span>{item.video.metadata.category}</span>
+                  <span>{(item.video.metadata as any).category || 'General'}</span>
                 </div>
               </div>
 

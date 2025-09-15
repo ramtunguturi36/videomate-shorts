@@ -190,7 +190,7 @@ const VideoFeed: React.FC<VideoFeedProps> = ({ folderPath, onImageUnlock }) => {
 
   const handleComment = (video: VideoFeedItem) => {
     // TODO: Implement comment functionality
-    toast.info('Comments coming soon!');
+    toast('Comments coming soon!');
   };
 
   if (error) {
@@ -274,7 +274,7 @@ const VideoFeed: React.FC<VideoFeedProps> = ({ folderPath, onImageUnlock }) => {
         ))}
       </div>
 
-      <style jsx>{`
+      <style>{`
         div::-webkit-scrollbar {
           display: none;
         }

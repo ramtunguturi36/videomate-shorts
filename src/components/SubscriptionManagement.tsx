@@ -259,7 +259,7 @@ const SubscriptionManagement: React.FC = () => {
               <div key={purchase.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-900">
-                    {purchase.videoId?.title || 'Video Image'}
+                    {typeof purchase.videoId === 'string' ? purchase.videoId : (purchase.videoId as any)?.title || 'Video Image'}
                   </p>
                   <p className="text-sm text-gray-600">
                     Expires in {Math.ceil(purchase.timeRemaining / (1000 * 60))} minutes
