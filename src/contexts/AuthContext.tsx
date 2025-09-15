@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthContextType, User, Admin, LoginResponse, RegisterResponse } from '../types/auth';
 import { authAPI } from '../services/api';
 
@@ -10,7 +9,6 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const navigate = useNavigate();
   const [user, setUser] = useState<User | Admin | null>(null);
   const [userType, setUserType] = useState<'user' | 'admin' | null>(null);
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
@@ -53,7 +51,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.user!);
       setUserType('user');
       
-      navigate('/dashboard');
+      // Use window.location for navigation since we're outside Router context
+      window.location.href = '/dashboard';
     } catch (error: any) {
       setError(error.response?.data?.message || 'Login failed');
       throw error;
@@ -74,7 +73,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(response.admin!);
       setUserType('admin');
       
-      navigate('/admin/dashboard');
+      // Use window.location for navigation since we're outside Router context
+      window.location.href = '/admin/dashboard';
     } catch (error: any) {
       setError(error.response?.data?.message || 'Admin login failed');
       throw error;
